@@ -104,7 +104,8 @@ namespace PicasaWebSync
                 }
                 
                 // Copy JPEG Exif properties
-    			if (originalImage.RawFormat == ImageFormat.Jpeg)
+				if (originalImage.RawFormat == ImageFormat.Jpeg ||
+					originalImage.RawFormat.Guid.ToString () == "b96b3cae-0728-11d3-9d7b-0000f81ef32e")
 				{
 					foreach (PropertyItem originalItem in originalImage.PropertyItems)
 						resizedImage.SetPropertyItem (originalItem);
