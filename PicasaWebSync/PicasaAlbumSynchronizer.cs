@@ -11,6 +11,7 @@ using Google.Picasa;
 using System.Net;
 using System.Xml;
 using System.Net.Sockets;
+using NLog;
 
 namespace PicasaWebSync
 {
@@ -19,6 +20,8 @@ namespace PicasaWebSync
     /// </summary>
     public class PicasaAlbumSynchronizer
     {
+        private static Logger s_logger = LogManager.GetLogger("*");
+
         #region Constructor
         public PicasaAlbumSynchronizer()
         {
@@ -122,7 +125,6 @@ namespace PicasaWebSync
             WriteOutput(string.Format("    Files skipped: {0}", m_fileSkipCount.ToString()));
             WriteOutput(string.Format("   Errors occured: {0}", m_errorsCount.ToString()));
             WriteOutput(string.Format("     Elapsed time: {0}", (DateTime.Now - m_startTime).ToString()));
-            WriteOutput(string.Empty);
         }
 
         /// <summary>
@@ -403,7 +405,7 @@ namespace PicasaWebSync
                     {
                         if (isVideo && this.ResizeVideos)
                         {
-                            WriteOutput(string.Concat("Resizing Video: ", sourceFile.Name), true);
+                            WriteOutput(string.Concat("Resizing Video: ", sourceFile.FullName), true);
                             string resizedVideoPath = VideoResizer.ResizeVideo(sourceFile, this.ResizeVideosCommand);
                             //change souceFilePath to resized video file location
                             souceFilePath = resizedVideoPath;
@@ -415,11 +417,11 @@ namespace PicasaWebSync
 
                             if (isImage && this.ResizePhotos)
                             {
-                                WriteOutput(string.Concat("Resizing Photo: ", sourceFile.Name), true);
+                                WriteOutput(string.Concat("Resizing Photo: ", sourceFile.FullName), true);
                                 postFileStream = ImageResizer.ResizeImage(postFileStream, imageFormat, this.ResizePhotosMaxSize);
                             }
 
-                            WriteOutput(string.Format("Uploading File: {0}", sourceFile.Name), true);
+                            WriteOutput(string.Format("Uploading File: {0}", sourceFile.FullName), true);
                             Uri insertPhotoFeedUri = new Uri(PicasaQuery.CreatePicasaUri(this.PicasaUsername, targetAlbum.Id));
 
                             PhotoEntry newFileEntry = new PhotoEntry();
@@ -481,7 +483,7 @@ namespace PicasaWebSync
         /// /// <param name="isImage">Indicates of file is an image.</param>
         /// <param name="imageFormat">GDI Image format (Out)</param>
         /// <param name="imageContentType">MIME content type (Out)</param>
-        private void GetFileInfo(FileInfo file, out bool isImage, out bool isVideo, out ImageFormat imageFormat, out string contentType)
+        public static void GetFileInfo(FileInfo file, out bool isImage, out bool isVideo, out ImageFormat imageFormat, out string contentType)
         {
             imageFormat = null;
             contentType = null;
@@ -532,11 +534,11 @@ namespace PicasaWebSync
         {
             if (!verboseOnly || this.VerboseOutput)
             {
-                Console.WriteLine(message);
+                s_logger.Info(message);
             }
             else
             {
-                Console.Write(".");
+                s_logger.Info(".");
             }
         }
         #endregion
