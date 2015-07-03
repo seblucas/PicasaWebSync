@@ -83,7 +83,7 @@ namespace PicasaWebSync
         public void SyncFolder(string folderPath)
         {
             ResetCounters();
-            GDataAuthenticator authenticator = new GDataAuthenticator ();
+            GDataAuthenticator authenticator = new GDataAuthenticator (this.PicasaPassword);
             PicasaService session = new PicasaService("PicasaWebSync");
             session.RequestFactory = authenticator.requestFactory;
             AlbumQuery query = new AlbumQuery(PicasaQuery.CreatePicasaUri(this.PicasaUsername));
