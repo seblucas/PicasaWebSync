@@ -6,7 +6,6 @@ using System.Security.Cryptography.X509Certificates;
 using Google.GData.Apps;
 using Google.GData.Client;
 using Google.GData.Extensions;
-using Google.Apis.Auth.OAuth2;
 
 namespace PicasaWebSync
 {
@@ -17,7 +16,7 @@ namespace PicasaWebSync
 		public GDataAuthenticator ()
 		{
 			requestFactory = new GDataRequestFactory ("PicasaWebSync");
-			requestFactory.CustomHeaders.Add (string.Format ("Authorization: Bearer {0}", "XXXX"));
+			requestFactory.CustomHeaders.Add (string.Format ("Authorization: Bearer {0}", accessToken));
 		}		
 	}
 }
